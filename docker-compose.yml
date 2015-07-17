@@ -1,0 +1,9 @@
+# Web node
+atomhopper:
+  build: .
+  ports:
+    - "8080:8080"
+  volumes:
+    - etc:/etc/atomhopper
+  environment:
+    - VIRTUAL_HOST=crosswired.local
