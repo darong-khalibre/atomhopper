@@ -15,7 +15,7 @@ NOTE: Place this file in the following folder: /etc/atomhopper/atom-server.cfg.x
         will be incorrect.
         Scheme should be either "http" or "https"
     -->
-    <host domain="domain.com" scheme="http" />
+    <host domain="crosswired.local:8080" scheme="http" />
 
     <!--
         The following configuration is to enable the feature to return

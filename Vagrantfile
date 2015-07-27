@@ -186,6 +186,7 @@ Vagrant.configure("2") do |config|
     # See https://github.com/docker/machine/pull/1069
     v.customize ['modifyvm', :id, '--natdnshostresolver1', 'off']
     v.customize ['modifyvm', :id, '--natdnsproxy1', 'off']
+   
   end
 
   ## Provisioning scripts ##
@@ -198,6 +199,17 @@ Vagrant.configure("2") do |config|
     SCRIPT
     s.args = "#{vagrant_mount_point}"
   end
+  
+  # Configure Docker local registry
+  if $vconfig['khalibre_qas_ip']
+    config.vm.provision "shell", run: "always" do |s|
+        s.inline = <<-SCRIPT
+          echo 'EXTRA_ARGS="$EXTRA_ARGS --insecure-registry qas.crosswired.net:5000"' >> /var/lib/boot2docker/profile && sudo /etc/init.d/docker restart
+          echo "$1 qas.crosswired.net" >> /etc/hosts
+        SCRIPT
+        s.args = $vconfig['khalibre_qas_ip']
+    end
+  end  
   
   # Install dsh tool (Drude Shell) into VM's permanent storage.
   # https://github.com/blinkreaction/drude
@@ -256,7 +268,7 @@ Vagrant.configure("2") do |config|
       s.inline = <<-SCRIPT
         echo "Found docker-compose.yml in the root folder. Starting containers..."
         cd $1
-        docker-compose up -d
+        docker-compose up -d --allow-insecure-ssl
       SCRIPT
       s.args = "#{vagrant_mount_point}"
     end
